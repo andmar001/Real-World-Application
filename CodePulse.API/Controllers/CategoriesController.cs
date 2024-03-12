@@ -74,5 +74,32 @@ namespace CodePulse.API.Controllers
 
             return Ok(response);
         }
+        [HttpPut]
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> EditCategory([FromRoute] Guid id, UpdateCategoryRequestDTO request)
+        {
+            // Convert DTO to Domain Model
+            var category = new Category
+            {
+                Id = id,
+                Name = request.Name,
+                UrlHandler = request.UrlHandler
+            };
+
+            category = await categoryRepository.UpdatedAsync(category);
+
+            if (category is null)
+            {
+                return NotFound();
+            }
+            // Convert Domain Model to DTO
+            var response = new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                UrlHandler = category.UrlHandler
+            };
+            return Ok(response);
+        }
     }
 }
